@@ -30,6 +30,11 @@ class RedirectLinkRepo(AsyncAbstractRedirectLinkRepo):
     async def create(self, redirect_link: RedirectLinkEnity, **kwargs):
         session = get_session()
 
+        try_get_redirect_link = await self.get(link=redirect_link.link)
+        
+        if try_get_redirect_link:
+            return try_get_redirect_link
+
         if not redirect_link.redirect_endpoint:
             redirect_link.redirect_endpoint = await generate_redirect_link()
 
